@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Your Cart</title>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f0f9f0;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #388e3c;
+    }
+
+    .cart-container {
+      max-width: 800px;
+      margin: 20px auto;
+    }
+
+    .cart-item {
+      display: flex;
+      align-items: center;
+      background: white;
+      margin-bottom: 15px;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    }
+
+    .cart-item img {
+      width: 80px;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 6px;
+      margin-right: 20px;
+    }
+
+    .cart-details {
+      flex-grow: 1;
+    }
+
+    .remove-btn {
+      background-color: #e53935;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .remove-btn:hover {
+      background-color: #b71c1c;
+    }
+
+    .total {
+      text-align: right;
+      font-weight: bold;
+      font-size: 18px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Your Cart</h1>
+  <div class="cart-container" id="cartItems"></div>
+  <div class="total" id="totalAmount"></div>
+
+  <script>
+    const cartItems = JSON.parse(localStorage.getItem("cart")) || [];
+    const container = document.getElementById("cartItems");
+    const totalAmount = document.getElementById("totalAmount");
+
+    let total = 0;
+
+    if (cartItems.length === 0) {
+      container.innerHTML = "<p>Your cart is empty.</p>";
+    } else {
+      cartItems.forEach((item, index) => {
+        const price = parseInt(item.price.replace("₹", ""));
+        total += price;
+
+        const card = document.createElement("div");
+        card.className = "cart-item";
+
+        card.innerHTML = `
+          <img src="${item.img}" alt="${item.title}">
+          <div class="cart-details">
+            <h3>${item.title}</h3>
+            <p>${item.author}</p>
+            <p>${item.price}</p>
+          </div>
+          <button class="remove-btn" onclick="removeItem(${index})">Remove</button>
+        `;
+
+        container.appendChild(card);
+      });
+
+      totalAmount.textContent = "Total: ₹" + total;
+    }
+
+    function removeItem(index) {
+      cartItems.splice(index, 1);
+      localStorage.setItem("cart", JSON.stringify(cartItems));
+      location.reload(); // Refresh to update UI
+    }
+  </script>
+
+</body>
+</html>
